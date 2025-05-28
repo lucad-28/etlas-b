@@ -1,0 +1,17 @@
+services:
+  etlas-b:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_NAME=${MODEL_NAME}
+      - DATABASE_URL=${DATABASE_URL}
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    env_file:
+      - .env.production
+    restart: unless-stopped

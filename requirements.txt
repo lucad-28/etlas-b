@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pandas
+python-multipart
+openai
+pydantic-settings
+SQLAlchemy
+pydantic[email,timezone]
+psycopg2-binary

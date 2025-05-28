@@ -1,0 +1,37 @@
+# Dockerfile.prod - Optimizado para producción en Cloud Run
+FROM python:3.12-slim
+
+# Instalar dependencias del sistema si son necesarias
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear usuario no-root para seguridad
+RUN useradd --create-home --shell /bin/bash app
+
+WORKDIR /app
+
+# Copiar requirements primero para aprovechar cache de Docker
+COPY requirements.txt .
+
+# Instalar dependencias Python
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copiar código fuente
+COPY . .
+
+# Cambiar ownership al usuario app
+RUN chown -R app:app /app
+USER app
+
+# Configurar variables de entorno para producción
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Exponer puerto
+EXPOSE 8000
+
+# Comando para producción (sin --reload)
+CMD ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

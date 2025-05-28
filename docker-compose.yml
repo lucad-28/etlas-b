@@ -1,0 +1,15 @@
+services:
+  etlas-b:
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    build: .
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_NAME=${MODEL_NAME}
+      - DATABASE_URL=${DATABASE_URL}
+    stdin_open: true
+    tty: true
